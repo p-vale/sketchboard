@@ -2,24 +2,28 @@ let style = document.createElement("style");
 style.innerText = `* {margin: 0px; padding:0px;}
 html, body {height: 100%;}
 html {display: table; margin: auto;}
-body {background-color: #1e1d1c; display: table-cell; vertical-align: middle;}
+body {display: table-cell; vertical-align: middle;}
 .container {width: 600px; height: 600px;}
 .cell-style {border: 1px solid silver;}
-.button-style {padding: 5px; width: 109px; border-radius: 5px; border: 1.5px solid silver; font-weight: bold}`;
+.button-style {padding: 5px; width: 109px; border-radius: 5px; border: 1.5px solid silver; font-weight: bold;}
+.modal {position: fixed; width: 100vw; height: 100vh; visibility: hidden; top: 0; left: 0; display: flex; align-items: center; justify-content: center;}
+.modalOpen {visibility: visible; background-color: #c1ffc1;}
+.modalInput {border-radius: 10px; border: 1.5px solid silver; background: white; position: relative; padding: 30px; font-family: sans;}`;
 document.head.appendChild(style);
 
-const btnOpt = document.createElement("div");
-btnOpt.style.display = "flex";
-btnOpt.style.justifyContent = "space-between";
-btnOpt.style.marginBottom = "20px";
-document.body.append(btnOpt);
+//BUTTONS OPTIONS AREA
+const btnOptions = document.createElement("div");
+btnOptions.style.display = "flex";
+btnOptions.style.justifyContent = "space-between";
+btnOptions.style.marginBottom = "20px";
+document.body.append(btnOptions);
 
+//GRID
 const container = document.createElement("div");
 container.style.display = "grid";
 container.classList.add("container");
 document.body.append(container);
 
-//GRID
 let colRow = 16;
 
 function setGrid (b) {
@@ -46,27 +50,81 @@ let cellNum = colRow * colRow;
 
 cells(cellNum);
 
-function gridSize () {
-    let gridNum = Number(window.prompt("How many suqares per row?", "choose number between 1 and 50"));
-    if (gridNum >= 1 && gridNum <= 50) {
-        colRow = gridNum;
-        return;
-    } else {
-        gridSize();
-    }
+const cleanUp = () => container.innerHTML = "";
+
+//MODAL POPUP
+
+const modal = document.createElement("div");
+modal.classList.add("modal");
+document.body.append(modal);
+
+const modalInput = document.createElement("div");
+modalInput.classList.add("modalInput");
+modal.appendChild(modalInput);
+
+const info = document.createElement("p");
+info.innerHTML = "How many squares by column?";
+info.style.marginBottom = "20px";
+modalInput.appendChild(info);
+
+function openModal() {
+    return modal.classList.add("modalOpen");
 }
 
-let cleanUp = () => container.innerHTML = "";
+function closeModal() {
+    return modal.classList.remove("modalOpen");
+}
+
+const inputNum = document.createElement("input");
+inputNum.type = "number";
+inputNum.min = 1;
+inputNum.max = 50;
+inputNum.placeholder = "choose a number between 1 and 50";
+inputNum.style.minWidth = "250px";
+inputNum.style.padding = "5px";
+inputNum.style.marginRight = "15px";
+inputNum.style.borderRadius = "5px";
+inputNum.style.border = "1.5px solid silver";
+modalInput.appendChild(inputNum);
+
+const submitInput = document.createElement("input");
+submitInput.type = "submit";
+submitInput.value = "MAKE NEW GRID";
+submitInput.style.padding = "4.5px";
+submitInput.style.borderRadius = "5px";
+submitInput.style.border = "1.5px solid silver";
+submitInput.style.backgroundColor = "#c1ffc1";
+submitInput.style.fontWeight = "bold";
+submitInput.addEventListener("mouseover", () => {
+    submitInput.style.border = "2px solid black";
+});
+submitInput.addEventListener("mouseout", () => {
+    submitInput.style.border = "1.5px solid silver";
+});
+submitInput.addEventListener("click", () => {
+    if (inputNum.value > 50) {
+        info.innerHTML = "please choose number between 1 and 50";
+    } else {
+        info.innerHTML = "How many squares by column?";
+        colRow = parseInt(inputNum.value);
+        cellNum = colRow * colRow;
+        closeModal();
+        setGrid(colRow);
+        cells(cellNum);
+        return;
+    }
+});
+modalInput.appendChild(submitInput);
 
 //COLORS
 function randomLight () {
-    return Math.floor(Math.random() * 76) + 180; //(Math.random() * (max - min + 1)) + min
+    return Math.floor(Math.random() * 71) + 160; //(Math.random() * (max - min + 1)) + min > 230-160
 }
 
 function rainbow() {
-    let r = randomLight();
-    let g = randomLight();
-    let b = randomLight();
+    let r = randomLight() + 30;
+    let g = randomLight() + 30;
+    let b = randomLight() + 30;
     return "rgb(" + r + "," + g + "," + b + ")";
 }
 
@@ -79,7 +137,7 @@ function pink() {
 }
 
 function yellow() {
-    return "rgb(" + 255 + "," + 255 + "," + randomLight() + ")";
+    return "rgb(" + 250 + "," + 250 + "," + randomLight() + ")";
 }
 
 function colors() {
@@ -99,15 +157,12 @@ const btn = document.createElement("button");
 btn.classList.add("button-style");
 btn.style.marginLeft = "0px";
 btn.style.background = "none";
-btn.style.color = "silver";
 btn.innerHTML = "CHANGE GRID";
 btn.addEventListener("click", () => {
     cleanUp();
-    gridSize();
-    setGrid(colRow);
-    cells(colRow*colRow);
+    openModal(); //MODAL  
 });
-btnOpt.append(btn);
+btnOptions.append(btn);
 
 
 const rainbowBtn = document.createElement("button");
@@ -119,8 +174,7 @@ rainbowBtn.addEventListener("click", () => {
     setGrid(colRow);
     cells(colRow*colRow);
 });
-btnOpt.append(rainbowBtn);
-
+btnOptions.append(rainbowBtn);
 
 const yellowBtn = document.createElement("button");
 yellowBtn.classList.add("button-style");
@@ -132,7 +186,7 @@ yellowBtn.addEventListener("click", () => {
     cells(colRow*colRow);
     container.firstChild.classList.add("yellow");
 });
-btnOpt.append(yellowBtn);
+btnOptions.append(yellowBtn);
 
 const pinkBtn = document.createElement("button");
 pinkBtn.classList.add("button-style");
@@ -144,7 +198,7 @@ pinkBtn.addEventListener("click", () => {
     cells(colRow*colRow);
     container.firstChild.classList.add("pink");
 });
-btnOpt.append(pinkBtn);
+btnOptions.append(pinkBtn);
 
 const blueBtn = document.createElement("button");
 blueBtn.classList.add("button-style");
@@ -156,4 +210,4 @@ blueBtn.addEventListener("click", () => {
     cells(colRow*colRow);
     container.firstChild.classList.add("blue");
 });
-btnOpt.append(blueBtn);
+btnOptions.append(blueBtn);
