@@ -1,2 +1,2 @@
 # simple-sketch
-grid to let the user "draw" with the mouse.
+Grid to let the user "draw" with the mouse.
