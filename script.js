@@ -10,7 +10,7 @@ body {display: table-cell; vertical-align: middle;}
 .modal {position: fixed; width: 100vw; height: 100vh; visibility: hidden; top: 0; left: 0; display: flex; align-items: center; justify-content: center;}
 .modalOpen {visibility: visible; background-color: #c1ffc1;}
 .modalInput {border-radius: 10px; border: 1.5px solid silver; background: white; position: relative; padding: 30px; font-family: sans;}
-@media (max-width: 610px) {.btnOptions{ width: 400px; height: 70px; flex-direction: column; align-content:space-between;} .container{width:400px; height:400px;}
+@media (max-width: 610px), (max-height: 680px) {.btnOptions{ width: 400px; height: 70px; flex-direction: column; align-content:space-between;} .container{width:400px; height:400px;}
 @media (max-width: 400px) {.btnOptions{ width: 300px; flex-direction:row; gap: 15px; justify-content: center; margin-bottom: 50px;} .button-style {padding: 3px;} .container{width:300px; height:300px;} }`;
 document.head.appendChild(style);
 
